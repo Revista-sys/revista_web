@@ -7933,4 +7933,5 @@
   'The logo type must be.jpg  .png  .jpeg  .gif  .bmp  .tif  .tiff .webp' => 'The logo type must be.jpg  .png  .jpeg  .gif  .bmp  .tif  .tiff .webp',
   'The banner type must be.jpg  .png  .jpeg  .gif  .bmp  .tif  .tiff .webp' => 'The banner type must be.jpg  .png  .jpeg  .gif  .bmp  .tif  .tiff .webp',
   'Find_your_favourite_brands_and_products' => 'Find your favourite brands and products',
+  'online' => 'Online',
 );

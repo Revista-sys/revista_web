@@ -7788,4 +7788,5 @@
   'The logo field is required.' => 'The logo field is required.',
   'The shop address field is required' => 'The shop address field is required',
   'Thanks_&_Regards' => 'Thanks & Regards',
+  'online' => 'Online',
 );

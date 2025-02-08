@@ -94,7 +94,7 @@ class LoginController extends Controller
                     ]);
                 }else {
                     Session::forget('default_recaptcha_id_customer_login');
-                    Toastr::error(translate('captcha_failed'));
+                    Toastr() -> error(translate('captcha_failed'));
                     return back();
                 }
             }
@@ -115,7 +115,7 @@ class LoginController extends Controller
                     'redirect_url'=>''
                 ]);
             }else{
-                Toastr::error(translate('credentials_doesnt_match'));
+                Toastr() -> error(translate('credentials_doesnt_match'));
                 return back()->withInput();
             }
         }
@@ -158,7 +158,7 @@ class LoginController extends Controller
                     'redirect_url'=>''
                 ]);
             }else{
-                Toastr::error(translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans());
+                Toastr() -> error(translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans());
                 return back()->withInput();
             }
         }
@@ -173,7 +173,7 @@ class LoginController extends Controller
                         'message'=>translate('your_account_is_suspended'),
                     ]);
                 }else{
-                    Toastr::error(translate('your_account_is_suspended'));
+                    Toastr() -> error(translate('your_account_is_suspended'));
                     return back()->withInput();
                 }
             }
@@ -186,7 +186,7 @@ class LoginController extends Controller
 
             session()->put('wish_list', $wish_list);
             session()->put('compare_list', $compare_list);
-            Toastr::info(translate('welcome_to') .' '. Helpers::get_business_settings('company_name') . '!');
+            Toastr() -> info(translate('welcome_to') .' '. Helpers::get_business_settings('company_name') . '!');
             CartManager::cart_to_db();
 
             $user->login_hit_count = 0;
@@ -227,7 +227,7 @@ class LoginController extends Controller
                     'message'=> translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans(),
                     'redirect_url'=>''
                 ];
-                Toastr::error(translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans());
+                Toastr() -> error(translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans());
 
             }elseif($user->is_temp_blocked == 1 && Carbon::parse($user->temp_block_time)->diffInSeconds() >= $temp_block_time){
 
@@ -242,7 +242,7 @@ class LoginController extends Controller
                     'message'=> translate('credentials_doesnt_match'),
                     'redirect_url'=>''
                 ];
-                Toastr::error(translate('credentials_doesnt_match'));
+                Toastr() -> error(translate('credentials_doesnt_match'));
 
             }elseif($user->login_hit_count >= $max_login_hit &&  $user->is_temp_blocked == 0){
                 $user->is_temp_blocked = 1;
@@ -257,14 +257,14 @@ class LoginController extends Controller
                     'message'=> translate('too_many_attempts._please_try_again_after_'). CarbonInterval::seconds($time)->cascade()->forHumans(),
                     'redirect_url'=>''
                 ];
-                Toastr::error(translate('too_many_attempts._please_try_again_after_'). CarbonInterval::seconds($time)->cascade()->forHumans());
+                Toastr() -> error(translate('too_many_attempts._please_try_again_after_'). CarbonInterval::seconds($time)->cascade()->forHumans());
             }else{
                 $ajax_message = [
                     'status'=>'error',
                     'message'=> translate('credentials_doesnt_match'),
                     'redirect_url'=>''
                 ];
-                Toastr::error(translate('credentials_doesnt_match'));
+                Toastr() -> error(translate('credentials_doesnt_match'));
 
                 $user->login_hit_count += 1;
                 $user->save();
@@ -283,7 +283,7 @@ class LoginController extends Controller
     {
         auth()->guard('customer')->logout();
         session()->forget('wish_list');
-        Toastr::info(translate('come_back_soon').'!');
+        Toastr() -> info(translate('come_back_soon').'!');
         return redirect()->route('home');
     }
 

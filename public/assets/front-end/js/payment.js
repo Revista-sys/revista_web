@@ -4,12 +4,12 @@ setTimeout(function () {
     $('.stripe-button-el').hide();
     $('.razorpay-payment-button').hide();
 }, 10)
-$(function() {
+$(function () {
     $('.proceed_to_next_button').addClass('disabled');
 });
 const radioButtons = document.querySelectorAll('input[type="radio"]');
 radioButtons.forEach(radioButton => {
-    radioButton.addEventListener('change', function() {
+    radioButton.addEventListener('change', function () {
         if (this.checked) {
             $('.proceed_to_next_button').removeClass('disabled');
 
@@ -20,29 +20,30 @@ radioButtons.forEach(radioButton => {
             });
             this.setAttribute('checked', 'true');
             const field_id = this.id;
-            if(field_id == "pay_offline"){
+            if (field_id == "pay_offline") {
                 $('.pay_offline_card').removeClass('d-none')
                 $('.proceed_to_next_button').addClass('disabled');
 
-            }else{
+            } else {
                 $('.pay_offline_card').addClass('d-none');
                 $('.proceed_to_next_button').removeClass('disabled');
 
             }
-        }else{
+        } else {
         }
     });
 });
 
-function checkoutFromPayment(){
+function checkoutFromPayment() {
     let checked_button_id = $('input[type="radio"]:checked').attr('id');
+    console.log("Here is checkoutFromPayment function, checked_button_id: " + checked_button_id);
     $('#' + checked_button_id + '_form').submit();
 }
 
 const buttons = document.querySelectorAll('.offline_payment_button');
 const selectElement = document.getElementById('pay_offline_method');
 buttons.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         const buttonId = this.id;
         pay_offline_method_field(buttonId);
         selectElement.value = buttonId;
@@ -52,7 +53,7 @@ buttons.forEach(button => {
 $('#pay_offline_method').on('change', function () {
     pay_offline_method_field(this.value);
 });
-function pay_offline_method_field(method_id){
+function pay_offline_method_field(method_id) {
 
     $.ajaxSetup({
         headers: {

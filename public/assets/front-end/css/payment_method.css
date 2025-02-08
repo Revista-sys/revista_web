@@ -1,0 +1,23 @@
+.payment-method-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-cursor-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 320px;
+    height: 40px;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.card-cursor-container-inner {
+
+}
+
+.m-0 span {
+    padding: 0px !important;
+}

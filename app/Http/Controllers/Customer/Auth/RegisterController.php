@@ -69,11 +69,6 @@ $userdata = User::find($id);
         }
 
 
-
-
-
-
-
         $user = User::create([
             'name' => $request['f_name'] . ' ' . $request['l_name'],
             'f_name' => $request['f_name'],
@@ -132,7 +127,7 @@ $userdata = User::find($id);
 
 public function subscribe(Request $request)
 {
-    try
+    try 
     {
         // Retrieve data from the request
         $checkoutname = $request->input('name');
@@ -153,7 +148,7 @@ public function subscribe(Request $request)
 
         // Send payment request to MyFatoorah API
         $response = $this->client->post('https://apitest.myfatoorah.com/v2/SendPayment', [
-            'json' => [
+            'json' => [ 
                 'InvoiceValue' => $amount,
                 'DisplayCurrencyIso' => $currency,
                 'CustomerName' => $checkoutname,

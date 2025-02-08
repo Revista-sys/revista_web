@@ -65,7 +65,7 @@ class PaymentMethodController extends Controller
             'updated_at' => now()
         ]);
 
-        Toastr::success(translate('successfully_updated'));
+        Toastr() -> success(translate('successfully_updated'));
         return back();
     }
 
@@ -345,7 +345,7 @@ class PaymentMethodController extends Controller
             'additional_data' => json_encode($payment_additional_data),
         ]);
 
-        Toastr::success(GATEWAYS_DEFAULT_UPDATE_200['message']);
+        Toastr() -> success(GATEWAYS_DEFAULT_UPDATE_200['message']);
         return back();
     }
 }

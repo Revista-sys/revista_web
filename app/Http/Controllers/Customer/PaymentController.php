@@ -45,7 +45,7 @@ class PaymentController extends Controller
                 return response()->json(['errors' => Helpers::error_processor($validator)], 403);
             }else{
                 foreach ($errors as $value) {
-                    Toastr::error(translate($value['message']));
+                    Toastr() -> error(translate($value['message']));
                 }
                 return back();
             }
@@ -57,7 +57,7 @@ class PaymentController extends Controller
         if(!$product_stock && in_array($request->payment_request_from, ['app', 'react'])){
             return response()->json(['errors' => ['code' => 'product-stock', 'message' => 'The following items in your cart are currently out of stock']], 403);
         }elseif(!$product_stock){
-            Toastr::error(translate('the_following_items_in_your_cart_are_currently_out_of_stock'));
+            Toastr() -> error(translate('the_following_items_in_your_cart_are_currently_out_of_stock'));
             return redirect()->route('shop-cart');
         }
 
@@ -65,7 +65,7 @@ class PaymentController extends Controller
         if($verifyStatus['status'] == 0 && in_array($request->payment_request_from, ['app', 'react'])){
             return response()->json(['errors' => ['code' => 'Check the minimum order amount requirement']], 403);
         }elseif($verifyStatus['status'] == 0){
-            Toastr::info('Check the minimum order amount requirement');
+            Toastr() -> info('Check the minimum order amount requirement');
             return redirect()->route('shop-cart');
         }
 
@@ -124,14 +124,14 @@ class PaymentController extends Controller
             if (session()->has('payment_mode') && session('payment_mode') == 'app') {
                 return response()->json(['message' => 'Payment succeeded'], 200);
             } else {
-                Toastr::success(translate('Payment_success'));
+                Toastr() -> success(translate('Payment_success'));
                 return view(VIEW_FILE_NAMES['order_complete']);
             }
         }else{
             if(session()->has('payment_mode') && session('payment_mode') == 'app'){
                 return response()->json(['message' => 'Payment failed'], 403);
             }else{
-                Toastr::error(translate('Payment_failed').'!');
+                Toastr() -> error(translate('Payment_failed').'!');
                 return redirect(url('/'));
             }
         }
@@ -209,7 +209,7 @@ class PaymentController extends Controller
                 ''
             );
             if(empty($customer['phone'])){
-                Toastr::error(translate('please_update_your_phone_number'));
+                Toastr() -> error(translate('please_update_your_phone_number'));
                 return route('checkout-payment');
             }
         }
@@ -244,7 +244,7 @@ class PaymentController extends Controller
                 return response()->json(['message' => 'Add funds to wallet is deactivated'], 403);
             }
 
-            Toastr::error(translate('add_funds_to_wallet_is_deactivated'));
+            Toastr() -> error(translate('add_funds_to_wallet_is_deactivated'));
             return back();
         }
 
@@ -260,7 +260,7 @@ class PaymentController extends Controller
                 return response()->json(['errors' => $errors]);
             }else{
                 foreach ($errors as $value) {
-                    Toastr::error(translate($value['message']));
+                    Toastr() -> error(translate($value['message']));
                 }
                 return back();
             }
@@ -292,7 +292,7 @@ class PaymentController extends Controller
             }elseif(in_array($request->payment_request_from, ['react'])){
                 return response()->json($errors, 403);
             }else{
-                Toastr::error(translate('the_amount_needs_to_be_between').' '.currency_converter($minimum_add_fund_amount).' - '.currency_converter($maximum_add_fund_amount));
+                Toastr() -> error(translate('the_amount_needs_to_be_between').' '.currency_converter($minimum_add_fund_amount).' - '.currency_converter($maximum_add_fund_amount));
                 return back();
             }
         }

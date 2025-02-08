@@ -62,7 +62,7 @@ class ProfileController extends BaseController
     public function getUpdateView(string|int $id):View|RedirectResponse
     {
         if (auth('seller')->id() != $id) {
-            Toastr::warning(translate('you_can_not_change_others_profile'));
+            Toastr() -> warning(translate('you_can_not_change_others_profile'));
             return redirect()->back();
         }
         $vendor = $this->vendorRepo->getFirstWhere(['id'=>auth('seller')->id()]);
@@ -111,7 +111,7 @@ class ProfileController extends BaseController
     {
         $vendorId = auth('seller')->id();
         if ($vendorId != $id) {
-            Toastr::warning(translate('you_can_not_change_others_info'));
+            Toastr() -> warning(translate('you_can_not_change_others_info'));
             return redirect()->back();
         }
         $vendor = $this->vendorRepo->getFirstWhere(['id' => $vendorId]);
@@ -127,7 +127,7 @@ class ProfileController extends BaseController
     {
         $vendor = $this->vendorRepo->getFirstWhere(['id' => $id]);
         $this->vendorRepo->update(id: $vendor['id'], data: $this->vendorService->getVendorBankInfoData(request: $request));
-        Toastr::success(translate('successfully_updated').'!!');
+        Toastr() -> success(translate('successfully_updated').'!!');
         return redirect()->route(Profile::INDEX[ROUTE]);
     }
 

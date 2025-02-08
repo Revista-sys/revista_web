@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\RestAPI\v1;
 
 // use App\Http\Controllers\Controller;
- // use App\Models\MagzineCategory;
+// use App\Models\MagzineCategory;
 use App\Models\MostDemanded;
- use App\Models\Order;
+use App\Models\Order;
 // use App\Models\OrderDetail;
 // use App\Models\MagzineProduct;
 // use App\Models\Review;
@@ -49,49 +49,49 @@ class PaymentController extends Controller
         private MagzineProduct      $product,
         private Order        $order,
         private MostDemanded $most_demanded,
-    ){}
+    ) {}
 
 
-public function verifyPayment(Request $request)
-{
+    public function verifyPayment(Request $request)
+    {
 
 
-echo '<pre>';
-print_r($request->all());
-echo '</pre>';
+        echo '<pre>';
+        print_r($request->all());
+        echo '</pre>';
 
-//     $paymentId = $request->input('PaymentId');
-//     $status = $request->input('PaymentStatus');
+        //     $paymentId = $request->input('PaymentId');
+        //     $status = $request->input('PaymentStatus');
 
-//     // Update the order status based on payment status
-//     $order = Order::where('transaction_ref', $paymentId)->first();
-//     if ($order) {
-//         $order->payment_status = $status == 'Succeeded' ? 'paid' : 'failed';
-//         $order->save();
-//     }
-
-
-// return "payment faield";
-
-    //return redirect()->route('order-complete'); // Redirect to a completion page
+        //     // Update the order status based on payment status
+        //     $order = Order::where('transaction_ref', $paymentId)->first();
+        //     if ($order) {
+        //         $order->payment_status = $status == 'Succeeded' ? 'paid' : 'failed';
+        //         $order->save();
+        //     }
 
 
+        // return "payment faield";
+
+        //return redirect()->route('order-complete'); // Redirect to a completion page
 
 
-}
 
 
-public function paymentError(Request $request)
-{
-    // Handle payment error
-    // return redirect()->route('order-failed'); // Redirect to a failure page
-echo '<pre>';
-print_r($request->all());
-echo '</pre>';
+    }
 
-//return "payment faield";
 
-}
+    // public function paymentError(Request $request)
+    // {
+    //     // Handle payment error
+    //     // return redirect()->route('order-failed'); // Redirect to a failure page
+    // echo '<pre>';
+    // print_r($request->all());
+    // echo '</pre>';
+
+    // //return "payment faield";
+
+    // }
 
 
 }
