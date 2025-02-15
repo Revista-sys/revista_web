@@ -1,234 +1,234 @@
 function HSDemo() {
 
-  var settings = {
-    headerMain: document.getElementById("headerMain").innerHTML,
-    headerFluid: document.getElementById("headerFluid").innerHTML,
-    headerDouble: document.getElementById("headerDouble").innerHTML,
-    sidebarMain: document.getElementById("sidebarMain").innerHTML,
-  }
-
-  // Layouts
-  var body = document.getElementsByTagName('body')[0],
-    header = document.getElementsByClassName('navbar')[0],
-    navbarVerticalAside = document.getElementsByClassName('navbar-vertical-aside')[0]; // Radios
-
-  var radiosSkin = Array.prototype.slice.call(document.querySelectorAll('input[type=radio][name="layoutSkinsRadio"]'), 0),
-    radiosSidebarMode = Array.prototype.slice.call(document.querySelectorAll('input[type=radio][name="sidebarLayoutOptions"]'), 0),
-    radiosHeaderMode = Array.prototype.slice.call(document.querySelectorAll('input[type=radio][name="headerLayoutOptions"]'), 0); // Local Storage
-
-  var skin = window.localStorage.getItem('hs-builder-skin') === null ? 'default' : window.localStorage.getItem('hs-builder-skin'),
-    sidebarMode = window.localStorage.getItem('hs-builder-sidebar-mode') === null ? 'default' : window.localStorage.getItem('hs-builder-sidebar-mode'),
-    headerMode = window.localStorage.getItem('hs-builder-header-mode') === null ? 'false' : window.localStorage.getItem('hs-builder-header-mode');
-
-  var appendLayout = function appendLayout(str) {
-    body.insertAdjacentHTML('afterbegin', str);
-  };
-
-  function addContainer() {
-    var style = document.createElement('style');
-    document.head.appendChild(style);
-    style.textContent = "         \n      .content,\n      .footer {\n        width: 100%;\n        padding-right: 15px !important;\n        padding-left: 15px !important;\n        margin-right: auto;\n        margin-left: auto;\n      }\n      \n      @media (min-width: 1400px) {\n        .content,\n        .footer {\n          max-width: 1320px;\n        }\n      }       \n      \n      @media (min-width: 1400px) {\n        .content,\n        .footer {\n          max-width: 1320px;\n        }\n      }\n    ";
-  }
-
-  if (sidebarMode !== false || headerMode !== false) {
-    body.classList.remove('navbar-vertical-aside-mini-mode');
-  }
-
-  if (headerMode == 'false') {
-    if (!sidebarMode || sidebarMode === 'default') {
-      appendLayout(settings.sidebarMain);
-    } else if (sidebarMode === 'navbar-vertical-aside-compact-mode') {
-      appendLayout(settings.sidebarCompact);
-      document.body.className += ' navbar-vertical-aside-compact-mode navbar-vertical-aside-compact-mini-mode';
-      var style = document.createElement('style');
-      document.head.appendChild(style);
-      style.textContent = "\n@media(min-width: 993px) {\n.js-navbar-vertical-aside-toggle-invoker {\ndisplay: none !important;\n}\n}\n";
-    } else if (sidebarMode === 'navbar-vertical-aside-mini-mode') {
-      appendLayout(settings.sidebarMain);
-      document.body.className += ' navbar-vertical-aside-mini-mode';
+    var settings = {
+        headerMain: document.getElementById("headerMain").innerHTML,
+        headerFluid: document.getElementById("headerFluid").innerHTML,
+        headerDouble: document.getElementById("headerDouble").innerHTML,
+        sidebarMain: document.getElementById("sidebarMain").innerHTML,
     }
 
-    document.body.className += ' footer-offset has-navbar-vertical-aside navbar-vertical-aside-show-xl';
-  }
+    // Layouts
+    var body = document.getElementsByTagName('body')[0],
+        header = document.getElementsByClassName('navbar')[0],
+        navbarVerticalAside = document.getElementsByClassName('navbar-vertical-aside')[0]; // Radios
 
-  if (headerMode === 'single') {
-    if (skin === 'navbar-dark') {
-      settings.headerFluid = settings.headerFluid.replace(/btn-ghost-secondary/g, 'btn-ghost-light');
+    var radiosSkin = Array.prototype.slice.call(document.querySelectorAll('input[type=radio][name="layoutSkinsRadio"]'), 0),
+        radiosSidebarMode = Array.prototype.slice.call(document.querySelectorAll('input[type=radio][name="sidebarLayoutOptions"]'), 0),
+        radiosHeaderMode = Array.prototype.slice.call(document.querySelectorAll('input[type=radio][name="headerLayoutOptions"]'), 0); // Local Storage
+
+    var skin = window.localStorage.getItem('hs-builder-skin') === null ? 'default' : window.localStorage.getItem('hs-builder-skin'),
+        sidebarMode = window.localStorage.getItem('hs-builder-sidebar-mode') === null ? 'default' : window.localStorage.getItem('hs-builder-sidebar-mode'),
+        headerMode = window.localStorage.getItem('hs-builder-header-mode') === null ? 'false' : window.localStorage.getItem('hs-builder-header-mode');
+
+    var appendLayout = function appendLayout(str) {
+        body.insertAdjacentHTML('afterbegin', str);
+    };
+
+    function addContainer() {
+        var style = document.createElement('style');
+        document.head.appendChild(style);
+        style.textContent = "         \n      .content,\n      .footer {\n        width: 100%;\n        padding-right: 15px !important;\n        padding-left: 15px !important;\n        margin-right: auto;\n        margin-left: auto;\n      }\n      \n      @media (min-width: 1400px) {\n        .content,\n        .footer {\n          max-width: 1320px;\n        }\n      }       \n      \n      @media (min-width: 1400px) {\n        .content,\n        .footer {\n          max-width: 1320px;\n        }\n      }\n    ";
     }
 
-
-
-    appendLayout(settings.headerFluid);
-    body.classList.add('footer-offset');
-    var _header = document.getElementsByClassName('navbar')[0],
-      oldHeaderContent = _header.innerHTML;
-    _header.innerHTML = '<div class="container">' + oldHeaderContent + '</div>';
-    addContainer();
-  } else if (headerMode === 'double') {
-    appendLayout(settings.headerDouble);
-    body.classList.add('footer-offset');
-
-    if ('scrollRestoration' in history) {
-      // Back off, browser, I got this...
-      history.scrollRestoration = 'manual';
-    }
-  } else if (headerMode === 'double-container') {
-    appendLayout(settings.headerDouble);
-    body.classList.add('footer-offset');
-    var _header2 = document.getElementsByClassName('navbar')[0],
-      fisrtElement = _header2.firstElementChild;
-    fisrtElement.innerHTML = '<div class="navbar-dark w-100"> <div class="container">' + fisrtElement.firstElementChild.innerHTML + '</div> </div>';
-    _header2.innerHTML = fisrtElement.innerHTML + ' <div class="container">' + _header2.lastElementChild.innerHTML + '</div>';
-    addContainer();
-
-    if ('scrollRestoration' in history) {
-      // Back off, browser, I got this...
-      history.scrollRestoration = 'manual';
-    }
-  } else {
-    appendLayout(settings.headerMain);
-  }
-
-  if (skin && headerMode !== 'double' && headerMode !== 'double-container') {
-    var _header3 = document.getElementsByClassName('navbar')[0],
-      sidebar = document.getElementsByClassName('navbar-vertical-aside')[0];
-
-    if (headerMode === 'single' || headerMode === 'single-container') {
-      _header3.classList.add(skin);
+    if (sidebarMode !== false || headerMode !== false) {
+        body.classList.remove('navbar-vertical-aside-mini-mode');
     }
 
-    if (sidebar) {
-      sidebar.classList.add(skin);
-    }
-
-    if (skin === 'navbar-light') {
-      if (_header3) {
-        _header3.classList.remove('navbar-bordered');
-      }
-
-      if (sidebar) {
-        sidebar.classList.remove('navbar-bordered');
-      }
-    } else if (skin === 'navbar-dark') {
-      if (sidebar) {
-        for (var i = 0; i < document.querySelectorAll('aside .navbar-brand-logo').length; i++) {
-          document.querySelectorAll('aside .navbar-brand-logo')[i].setAttribute('src', document.querySelectorAll('aside .navbar-brand-logo')[0].getAttribute('src').replace('logo.svg', 'logo-white.svg'));
+    if (headerMode == 'false') {
+        if (!sidebarMode || sidebarMode === 'default') {
+            appendLayout(settings.sidebarMain);
+        } else if (sidebarMode === 'navbar-vertical-aside-compact-mode') {
+            appendLayout(settings.sidebarCompact);
+            document.body.className += ' navbar-vertical-aside-compact-mode navbar-vertical-aside-compact-mini-mode';
+            var style = document.createElement('style');
+            document.head.appendChild(style);
+            style.textContent = "\n@media(min-width: 993px) {\n.js-navbar-vertical-aside-toggle-invoker {\ndisplay: none !important;\n}\n}\n";
+        } else if (sidebarMode === 'navbar-vertical-aside-mini-mode') {
+            appendLayout(settings.sidebarMain);
+            document.body.className += ' navbar-vertical-aside-mini-mode';
         }
-      } else {
-        for (var i = 0; i < document.querySelectorAll('header .navbar-brand-logo').length; i++) {
-          document.querySelectorAll('header .navbar-brand-logo')[i].setAttribute('src', document.querySelectorAll('header .navbar-brand-logo')[0].getAttribute('src').replace('logo.svg', 'logo-white.svg'));
+
+        document.body.className += ' footer-offset has-navbar-vertical-aside navbar-vertical-aside-show-xl';
+    }
+
+    if (headerMode === 'single') {
+        if (skin === 'navbar-dark') {
+            settings.headerFluid = settings.headerFluid.replace(/btn-ghost-secondary/g, 'btn-ghost-light');
         }
-      }
 
-      for (var i = 0; i < document.getElementsByClassName('navbar-brand-logo-mini').length; i++) {
-        document.getElementsByClassName('navbar-brand-logo-mini')[i].setAttribute('src', document.getElementsByClassName('navbar-brand-logo-mini')[0].getAttribute('src').replace('logo-short.svg', 'logo-short-white.svg'));
-      }
 
-      for (var i = 0; i < document.getElementsByClassName('navbar-brand-logo-short').length; i++) {
-        document.getElementsByClassName('navbar-brand-logo-short')[i].setAttribute('src', document.getElementsByClassName('navbar-brand-logo-short')[0].getAttribute('src').replace('logo-short.svg', 'logo-short-white.svg'));
-      }
+
+        appendLayout(settings.headerFluid);
+        body.classList.add('footer-offset');
+        var _header = document.getElementsByClassName('navbar')[0],
+            oldHeaderContent = _header.innerHTML;
+        _header.innerHTML = '<div class="container">' + oldHeaderContent + '</div>';
+        addContainer();
+    } else if (headerMode === 'double') {
+        appendLayout(settings.headerDouble);
+        body.classList.add('footer-offset');
+
+        if ('scrollRestoration' in history) {
+            // Back off, browser, I got this...
+            history.scrollRestoration = 'manual';
+        }
+    } else if (headerMode === 'double-container') {
+        appendLayout(settings.headerDouble);
+        body.classList.add('footer-offset');
+        var _header2 = document.getElementsByClassName('navbar')[0],
+            fisrtElement = _header2.firstElementChild;
+        fisrtElement.innerHTML = '<div class="navbar-dark w-100"> <div class="container">' + fisrtElement.firstElementChild.innerHTML + '</div> </div>';
+        _header2.innerHTML = fisrtElement.innerHTML + ' <div class="container">' + _header2.lastElementChild.innerHTML + '</div>';
+        addContainer();
+
+        if ('scrollRestoration' in history) {
+            // Back off, browser, I got this...
+            history.scrollRestoration = 'manual';
+        }
+    } else {
+        appendLayout(settings.headerMain);
     }
-  }
 
-  radiosSkin.forEach(function (radio) {
-    if (skin === radio.value) {
-      radio.checked = true;
+    if (skin && headerMode !== 'double' && headerMode !== 'double-container') {
+        var _header3 = document.getElementsByClassName('navbar')[0],
+            sidebar = document.getElementsByClassName('navbar-vertical-aside')[0];
+
+        if (headerMode === 'single' || headerMode === 'single-container') {
+            _header3.classList.add(skin);
+        }
+
+        if (sidebar) {
+            sidebar.classList.add(skin);
+        }
+
+        if (skin === 'navbar-light') {
+            if (_header3) {
+                _header3.classList.remove('navbar-bordered');
+            }
+
+            if (sidebar) {
+                sidebar.classList.remove('navbar-bordered');
+            }
+        } else if (skin === 'navbar-dark') {
+            if (sidebar) {
+                for (var i = 0; i < document.querySelectorAll('aside .navbar-brand-logo').length; i++) {
+                    document.querySelectorAll('aside .navbar-brand-logo')[i].setAttribute('src', document.querySelectorAll('aside .navbar-brand-logo')[0].getAttribute('src').replace('logo.svg', 'logo-white.svg'));
+                }
+            } else {
+                for (var i = 0; i < document.querySelectorAll('header .navbar-brand-logo').length; i++) {
+                    document.querySelectorAll('header .navbar-brand-logo')[i].setAttribute('src', document.querySelectorAll('header .navbar-brand-logo')[0].getAttribute('src').replace('logo.svg', 'logo-white.svg'));
+                }
+            }
+
+            for (var i = 0; i < document.getElementsByClassName('navbar-brand-logo-mini').length; i++) {
+                document.getElementsByClassName('navbar-brand-logo-mini')[i].setAttribute('src', document.getElementsByClassName('navbar-brand-logo-mini')[0].getAttribute('src').replace('logo-short.svg', 'logo-short-white.svg'));
+            }
+
+            for (var i = 0; i < document.getElementsByClassName('navbar-brand-logo-short').length; i++) {
+                document.getElementsByClassName('navbar-brand-logo-short')[i].setAttribute('src', document.getElementsByClassName('navbar-brand-logo-short')[0].getAttribute('src').replace('logo-short.svg', 'logo-short-white.svg'));
+            }
+        }
     }
 
-    radio.addEventListener('change', function () {
-      skin = radio.value;
-    });
-  });
-  radiosSidebarMode.forEach(function (radio) {
-    if (sidebarMode === radio.value) {
-      radio.checked = true;
-    }
-
-    radio.addEventListener('change', function () {
-      sidebarMode = radio.value;
-      radiosSkin.forEach(function (radio) {
+    radiosSkin.forEach(function (radio) {
         if (skin === radio.value) {
-          radio.checked = true;
-        }
-
-        radio.disabled = false;
-      });
-      radiosHeaderMode.forEach(function (radio) {
-        radio.checked = false;
-        headerMode = false;
-      });
-    });
-  });
-  radiosHeaderMode.forEach(function (radio) {
-    if (headerMode === radio.value) {
-      radio.checked = true;
-
-      if (radio.value === 'double' || radio.value === 'double-container') {
-        radiosSkin.forEach(function (radio) {
-          radio.checked = false;
-          radio.disabled = true;
-        });
-        document.getElementById('js-builder-disabled').style.opacity = 1;
-      }
-
-      radiosSidebarMode.forEach(function (radio) {
-        radio.checked = false;
-      });
-    }
-
-    radio.addEventListener('change', function (e) {
-      if (radio.value !== 'default') {
-        headerMode = radio.value;
-      } else {
-        headerMode = false;
-      }
-
-      if (e.target.value === 'double' || radio.value === 'double-container') {
-        radiosSkin.forEach(function (radio) {
-          radio.checked = false;
-          radio.disabled = true;
-        });
-      } else {
-        radiosSkin.forEach(function (radio) {
-          if (skin === false && radio.value === 'default' || skin === radio.value) {
             radio.checked = true;
-          }
-
-          radio.disabled = false;
-        });
-      }
-
-      radiosSidebarMode.forEach(function (radio) {
-        radio.checked = false;
-        sidebarMode = false;
-      });
-    });
-  });
-  Array.prototype.slice.call(document.querySelectorAll('.custom-checkbox-card-input'), 0).forEach(function (radio) {
-    radio.addEventListener('change', function () {
-      radiosSkin.forEach(function (radio) {
-        if (radio.disabled) {
-          document.getElementById('js-builder-disabled').style.opacity = 1;
-        } else {
-          document.getElementById('js-builder-disabled').style.opacity = 0;
         }
-      });
-    });
-  });
 
-  document.getElementById("headerMain").parentNode.removeChild(document.getElementById("headerMain"));
-  document.getElementById("headerFluid").parentNode.removeChild(document.getElementById("headerFluid"));
-  document.getElementById("headerDouble").parentNode.removeChild(document.getElementById("headerDouble"));
-  document.getElementById("sidebarMain").parentNode.removeChild(document.getElementById("sidebarMain"));
+        radio.addEventListener('change', function () {
+            skin = radio.value;
+        });
+    });
+    radiosSidebarMode.forEach(function (radio) {
+        if (sidebarMode === radio.value) {
+            radio.checked = true;
+        }
+
+        radio.addEventListener('change', function () {
+            sidebarMode = radio.value;
+            radiosSkin.forEach(function (radio) {
+                if (skin === radio.value) {
+                    radio.checked = true;
+                }
+
+                radio.disabled = false;
+            });
+            radiosHeaderMode.forEach(function (radio) {
+                radio.checked = false;
+                headerMode = false;
+            });
+        });
+    });
+    radiosHeaderMode.forEach(function (radio) {
+        if (headerMode === radio.value) {
+            radio.checked = true;
+
+            if (radio.value === 'double' || radio.value === 'double-container') {
+                radiosSkin.forEach(function (radio) {
+                    radio.checked = false;
+                    radio.disabled = true;
+                });
+                document.getElementById('js-builder-disabled').style.opacity = 1;
+            }
+
+            radiosSidebarMode.forEach(function (radio) {
+                radio.checked = false;
+            });
+        }
+
+        radio.addEventListener('change', function (e) {
+            if (radio.value !== 'default') {
+                headerMode = radio.value;
+            } else {
+                headerMode = false;
+            }
+
+            if (e.target.value === 'double' || radio.value === 'double-container') {
+                radiosSkin.forEach(function (radio) {
+                    radio.checked = false;
+                    radio.disabled = true;
+                });
+            } else {
+                radiosSkin.forEach(function (radio) {
+                    if (skin === false && radio.value === 'default' || skin === radio.value) {
+                        radio.checked = true;
+                    }
+
+                    radio.disabled = false;
+                });
+            }
+
+            radiosSidebarMode.forEach(function (radio) {
+                radio.checked = false;
+                sidebarMode = false;
+            });
+        });
+    });
+    Array.prototype.slice.call(document.querySelectorAll('.custom-checkbox-card-input'), 0).forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            radiosSkin.forEach(function (radio) {
+                if (radio.disabled) {
+                    document.getElementById('js-builder-disabled').style.opacity = 1;
+                } else {
+                    document.getElementById('js-builder-disabled').style.opacity = 0;
+                }
+            });
+        });
+    });
+
+    document.getElementById("headerMain").parentNode.removeChild(document.getElementById("headerMain"));
+    document.getElementById("headerFluid").parentNode.removeChild(document.getElementById("headerFluid"));
+    document.getElementById("headerDouble").parentNode.removeChild(document.getElementById("headerDouble"));
+    document.getElementById("sidebarMain").parentNode.removeChild(document.getElementById("sidebarMain"));
 }
 
 HSDemo();
 
-$('.change-language').on('click',function (){
+$('.change-language').on('click', function () {
     let getText = $('#get-confirm-and-cancel-button-text');
     Swal.fire({
         title: getText.data('sure'),
-        text:  $('#change-language-message').data('text'),
+        text: $('#change-language-message').data('text'),
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -259,13 +259,13 @@ $('.change-language').on('click',function (){
 
 })
 
-$("#formUrlChange").on('click',function (){
+$("#formUrlChange").on('click', function () {
     let action = $(this).data('action');
     $('#form-data').attr('action', action);
 });
 
-function callDemo(){
-    $(".call-demo").on('click',function (){
+function callDemo() {
+    $(".call-demo").on('click', function () {
         toastr.info($('#call-demo-message').data('text'), {
             CloseButton: true,
             ProgressBar: true
@@ -274,7 +274,7 @@ function callDemo(){
 }
 callDemo()
 
-$('.toggle-switch-dynamic-image').on('click', function (event){
+$('.toggle-switch-dynamic-image').on('click', function (event) {
     event.preventDefault();
     const modalId = $(this).data('modal-id')
     const toggleId = $(this).data('toggle-id');
@@ -287,13 +287,13 @@ $('.toggle-switch-dynamic-image').on('click', function (event){
     toggleModal(modalId, toggleId, onImage, offImage, onTitle, offTitle, onMessage, offMessage)
 });
 
-$('.toggle-switch-message').on('click',function (event){
+$('.toggle-switch-message').on('click', function (event) {
     event.preventDefault();
     let rootPath = $('#get-root-path-for-toggle-modal-image').data('path');
     const modalId = $(this).data('modal-id')
     const toggleId = $(this).data('toggle-id');
-    const onImage = rootPath +'/'+$(this).data('on-image');
-    const offImage = rootPath +'/'+$(this).data('off-image');
+    const onImage = rootPath + '/' + $(this).data('on-image');
+    const offImage = rootPath + '/' + $(this).data('off-image');
     const onTitle = $(this).data('on-title');
     const offTitle = $(this).data('off-title');
     const onMessage = $(this).data('on-message');
@@ -301,58 +301,57 @@ $('.toggle-switch-message').on('click',function (event){
     toggleModal(modalId, toggleId, onImage, offImage, onTitle, offTitle, onMessage, offMessage)
 });
 
-function toggleModal(modalId,toggleId, onImage = null, offImage = null, onTitle, offTitle, onMessage, offMessage) {
-    if ($('#'+toggleId).is(':checked')) {
-        $('#'+modalId+'-title').empty().append(onTitle);
-        $('#'+modalId+'-message').empty().append(onMessage);
-        $('#'+modalId+'-image').attr('src', onImage);
-        $('#'+modalId+'-ok-button').attr('toggle-ok-button', toggleId);
+function toggleModal(modalId, toggleId, onImage = null, offImage = null, onTitle, offTitle, onMessage, offMessage) {
+    if ($('#' + toggleId).is(':checked')) {
+        $('#' + modalId + '-title').empty().append(onTitle);
+        $('#' + modalId + '-message').empty().append(onMessage);
+        $('#' + modalId + '-image').attr('src', onImage);
+        $('#' + modalId + '-ok-button').attr('toggle-ok-button', toggleId);
     } else {
-        $('#'+modalId+'-title').empty().append(offTitle);
-        $('#'+modalId+'-message').empty().append(offMessage);
-        $('#'+modalId+'-image').attr('src', offImage);
-        $('#'+modalId+'-ok-button').attr('toggle-ok-button', toggleId);
+        $('#' + modalId + '-title').empty().append(offTitle);
+        $('#' + modalId + '-message').empty().append(offMessage);
+        $('#' + modalId + '-image').attr('src', offImage);
+        $('#' + modalId + '-ok-button').attr('toggle-ok-button', toggleId);
     }
-    $('#'+modalId).modal('show');
+    $('#' + modalId).modal('show');
 }
 
-$('#toggle-modal-ok-button').on('click',function (){
+$('#toggle-modal-ok-button').on('click', function () {
     const toggleIdName = ($(this).attr('toggle-ok-button'));
-    const toggleId = $('#'+($(this).attr('toggle-ok-button')));
+    const toggleId = $('#' + ($(this).attr('toggle-ok-button')));
     if (toggleId.is(':checked')) {
         toggleId.prop('checked', false);
     } else {
         toggleId.prop('checked', true);
     }
     $('#toggle-modal').modal('hide');
-    if(toggleIdName === 'email-verification'){
+    if (toggleIdName === 'email-verification') {
         if ($("#email-verification").is(':checked') && $("#otp-verification").is(':checked')) {
             $('#otp-verification').removeAttr('checked');
             toastr.info($('#get-email-and-otp-verification-info-message').data('info'));
         }
     }
-    if(toggleIdName === 'otp-verification' && $('#get-application-environment-mode').data('value') !== 'demo'){
+    if (toggleIdName === 'otp-verification' && $('#get-application-environment-mode').data('value') !== 'demo') {
         if ($("#otp-verification").is(':checked') && $("#email-verification").is(':checked')) {
             $('#email-verification').removeAttr('checked');
             toastr.info($('#get-email-and-otp-verification-info-message').data('info'));
         }
-    }else {
+    } else {
         callDemo();
     }
 })
 
-$('#toggle-status-modal-ok-button').on('click', function (){
-    const toggleId = $('#'+$(this).attr('toggle-ok-button'));
+$('#toggle-status-modal-ok-button').on('click', function () {
+    const toggleId = $('#' + $(this).attr('toggle-ok-button'));
     if (toggleId.is(':checked')) {
         toggleId.prop('checked', false);
     } else {
         toggleId.prop('checked', true);
     }
-    let toggleOkButton = $(this).attr('toggle-ok-button')+ '-form';
+    let toggleOkButton = $(this).attr('toggle-ok-button') + '-form';
     submitStatusUpdateForm(toggleOkButton);
 });
-function submitStatusUpdateForm(formId)
-{
+function submitStatusUpdateForm(formId) {
     const form = $('#' + formId);
     $.ajaxSetup({
         headers: {
@@ -362,7 +361,7 @@ function submitStatusUpdateForm(formId)
     let updateText = $('#get-update-status-message');
     $.ajax({
         url: form.attr('action'),
-        method:form.attr('method'),
+        method: form.attr('method'),
         data: form.serialize(),
         success: function (data) {
             switch (form.data('from')) {
@@ -383,7 +382,7 @@ function submitStatusUpdateForm(formId)
                 case 'withdraw-method-status':
                     if (data.success) {
                         toastr.success(updateText.data('text'));
-                    } else{
+                    } else {
                         toastr.error(updateText.data('error'));
                     }
                     location.reload();
@@ -393,7 +392,7 @@ function submitStatusUpdateForm(formId)
                     toastr.success($('#get-featured-status-message').data('success'));
                     break;
                 case 'product-status-update':
-                    if (data.success ) {
+                    if (data.success) {
                         toastr.success(updateText.data('text'));
                     } else {
                         toastr.error(updateText.data('error'));
@@ -430,7 +429,7 @@ $('.js-toggle-password').each(function () {
     new HSTogglePassword(this).init()
 });
 
-$('.delete-data').on('click',function (){
+$('.delete-data').on('click', function () {
     let getText = $('#get-confirm-and-cancel-button-text-for-delete');
     Swal.fire({
         title: getText.data('sure'),
@@ -449,7 +448,7 @@ $('.delete-data').on('click',function (){
     })
 })
 
-$('.delete-data-without-form').on('click',function (){
+$('.delete-data-without-form').on('click', function () {
     let getText = $('#get-confirm-and-cancel-button-text-for-delete');
     Swal.fire({
         title: getText.data('sure'),
@@ -472,15 +471,15 @@ $('.delete-data-without-form').on('click',function (){
             $.ajax({
                 url: $(this).data('action'),
                 method: 'POST',
-                data: {id: id},
+                data: { id: id },
                 success: function (data) {
-                    if($(this).data('from') === 'currency'){
+                    if ($(this).data('from') === 'currency') {
                         if (parseInt(data.status) === 1) {
                             toastr.success($('#get-delete-currency-message').data('success'));
                         } else {
                             toastr.warning($('#get-delete-currency-message').data('warning'));
                         }
-                    }else{
+                    } else {
                         toastr.success($('#get-deleted-message').data('text'));
                     }
                     location.reload();
@@ -490,23 +489,23 @@ $('.delete-data-without-form').on('click',function (){
     })
 })
 
-function locationReload(){
-    $('.reload-by-onclick').on('click',function (){
+function locationReload() {
+    $('.reload-by-onclick').on('click', function () {
         location.reload()
     })
 }
 locationReload();
-$('.image-input').on('change',function (){
+$('.image-input').on('change', function () {
     let input = this;
     let img = document.getElementById($(this).data('image-id'));
     if (input.files && input.files[0]) {
         let reader = new FileReader();
         reader.onload = function (e) {
-            if(img !== null){
+            if (img !== null) {
                 img.src = e.target.result;
             }
             let imgName = input.files[0].name;
-            if(input.closest('[data-title]')){
+            if (input.closest('[data-title]')) {
                 input.closest('[data-title]').setAttribute("data-title", imgName);
             }
 
@@ -515,7 +514,7 @@ $('.image-input').on('change',function (){
     }
 });
 
-$('.copy-to-clipboard').on('click',function() {
+$('.copy-to-clipboard').on('click', function () {
     let copiedText = $($(this).data('id')).text();
     let tempInput = $('<textarea>');
     $('body').append(tempInput);
@@ -525,8 +524,8 @@ $('.copy-to-clipboard').on('click',function() {
     toastr.success($('#get-copy-to-clipboard').data('success'));
 });
 
-$(window).on('load',function (){
-    try{
+$(window).on('load', function () {
+    try {
         var swiper = new Swiper(".mySwiper", {
             pagination: {
                 el: ".swiper-pagination",
@@ -535,7 +534,7 @@ $(window).on('load',function (){
                 autoHeight: true,
             },
         });
-    }catch (e) {
+    } catch (e) {
     }
 });
 
@@ -554,14 +553,14 @@ backgroundImage.css("background-image", function () {
     return 'url("' + $(this).data("bg-img") + '")';
 }).removeAttr("data-bg-img").addClass("bg-img");
 
-function onErrorImage(){
+function onErrorImage() {
     $('.onerror-image').on('error', function () {
         let image = $(this).data('onerror');
         $(this).attr('src', image);
     });
 }
 onErrorImage()
-$(window).on('load',function (){
+$(window).on('load', function () {
     onErrorImage()
 })
 
@@ -609,13 +608,13 @@ $('.set-customer-value').on('change', function () {
 });
 
 $('.withdraw-status-filter').on('change', function () {
-    location.href=$(this).data('action')+'?'+'approved'+'='+$(this).val();
+    location.href = $(this).data('action') + '?' + 'approved' + '=' + $(this).val();
 });
-$('.form-alert').on('click',function (){
+$('.form-alert').on('click', function () {
     let getText = $('#get-confirm-and-cancel-button-text');
     Swal.fire({
         title: getText.data('sure'),
-        text:  $(this).data('message'),
+        text: $(this).data('message'),
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -630,14 +629,14 @@ $('.form-alert').on('click',function (){
     })
 })
 
-$("#general-section").click(function() {
+$("#general-section").click(function () {
     $("#password-section").removeClass("active");
     $("#general-section").addClass("active");
     $('html, body').animate({
         scrollTop: $("#general-div").offset().top
     }, 2000);
 });
-$("#password-section").click(function() {
+$("#password-section").click(function () {
     $("#general-section").removeClass("active");
     $("#password-section").addClass("active");
     $('html, body').animate({
@@ -666,7 +665,7 @@ $('#temporary-close-form').on('submit', function (e) {
     $.ajax({
         url: $(this).attr('action'),
         method: 'POST',
-        data: {status: status},
+        data: { status: status },
         success: function (response) {
             toastr.success(response.message);
             location.reload();
@@ -712,7 +711,7 @@ $('.update-status').on('click', function () {
     let targetUrl = $(this).data('redirect-route');
     Swal.fire({
         title: getText.data('sure'),
-        text:  $(this).data('message'),
+        text: $(this).data('message'),
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -736,9 +735,9 @@ $('.update-status').on('click', function () {
                 },
                 success: function (response) {
                     toastr.success(response.message);
-                    if (targetUrl){
+                    if (targetUrl) {
                         location.href = targetUrl;
-                    }else {
+                    } else {
                         location.reload();
                     }
 
@@ -806,7 +805,7 @@ $('.action-upload-section-dot-area').on('change', function () {
 
 function getRequestFunctionalityRender() {
     $('.action-get-request-onchange').on('change', function () {
-        let getUrlPrefix = $(this).data('url-prefix')+$(this).val();
+        let getUrlPrefix = $(this).data('url-prefix') + $(this).val();
         let id = $(this).data('element-id');
         let getElementType = $(this).data('element-type');
         getRequestFunctionality(getUrlPrefix, id, getElementType)
@@ -814,9 +813,9 @@ function getRequestFunctionalityRender() {
 }
 getRequestFunctionalityRender()
 
-function getRequestFunctionality(getUrlPrefix, id, getElementType){
+function getRequestFunctionality(getUrlPrefix, id, getElementType) {
     let message = $('#message-select-word').data('text');
-    $('#sub-sub-category-select').empty().append(`<option value="null" selected disabled>---`+ message +`---</option>`);
+    $('#sub-sub-category-select').empty().append(`<option value="null" selected disabled>---` + message + `---</option>`);
 
     $.get({
         url: getUrlPrefix,
@@ -861,7 +860,7 @@ $(".form-system-language-tab").on('click', function (e) {
     $("#" + lang + "-form").removeClass('d-none');
 });
 
-$('.open-info-web').on('click',function (){
+$('.open-info-web').on('click', function () {
     let websiteInfo = document.getElementById("website_info");
     if (websiteInfo.style.display === "none") {
         websiteInfo.style.display = "block";
@@ -894,7 +893,7 @@ $("#reset").on('click', function () {
     $('.spartan_remove_row').click();
 });
 
-$('.check-order').on('click',function (){
+$('.check-order').on('click', function () {
     location.href = $('#get-orders-list-route').data('action');
 })
 
@@ -939,33 +938,33 @@ function updateProductQuantityByKeyUp() {
             totalQtyCheck += qty_elements.eq(i).val();
         }
         $('input[name="current_stock"]').val(total_qty);
-        if((totalQtyCheck%1)){
+        if ((totalQtyCheck % 1)) {
             toastr.warning($('#get-quantity-check-message').data('warning'))
             $(this).val(parseInt($(this).val()));
         }
     });
     $('input[name="current_stock"]').on('keyup', function () {
-        if(($(this).val()%1)){
+        if (($(this).val() % 1)) {
             toastr.warning($('#get-quantity-check-message').data('warning'))
             $(this).val(parseInt($(this).val()));
         }
     });
 }
 updateProductQuantityByKeyUp();
-$('.onsubmit-disable-action-button').on('submit', function (){
+$('.onsubmit-disable-action-button').on('submit', function () {
     $('.onsubmit-disable-action-button button[type="submit"]').attr('disabled', true);
 });
-$('.reset-button').on('click',function (){
+$('.reset-button').on('click', function () {
     $('.select-product-button').text($('#get-select-product-text').data('text'));
 })
 
-$('.form-submit').on('click',function (){
+$('.form-submit').on('click', function () {
     let getText = $('#get-confirm-and-cancel-button-text');
     let targetUrl = $(this).data('redirect-route');
-    const getFormId =  $(this).data('form-id');
+    const getFormId = $(this).data('form-id');
     Swal.fire({
         title: getText.data('sure'),
-        text:  $(this).data('message'),
+        text: $(this).data('message'),
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -983,7 +982,7 @@ $('.form-submit').on('click',function (){
                 }
             });
             $.post({
-                url: $('#'+getFormId).attr('action'),
+                url: $('#' + getFormId).attr('action'),
                 data: formData,
                 contentType: false,
                 processData: false,
@@ -998,41 +997,41 @@ $('.form-submit').on('click',function (){
                                 ProgressBar: true
                             });
                         }
-                    } else if(data.error){
+                    } else if (data.error) {
                         toastr.error(data.error, {
                             CloseButton: true,
                             ProgressBar: true
                         });
-                    }else {
+                    } else {
                         toastr.success(data.message)
                         if (targetUrl) {
                             location.href = targetUrl;
-                        }else {
+                        } else {
                             location.reload();
                         }
                     }
-                },complete: function () {
+                }, complete: function () {
                     $('#loading').fadeOut();
                 },
-           })
+            })
         }
     })
 });
-function removeSymbol(){
-    $('.remove-symbol').on('keyup',function (){
+function removeSymbol() {
+    $('.remove-symbol').on('keyup', function () {
         $(this).val($(this).val().replace(/[^0-9]/g, ''));
     })
 }
 removeSymbol();
 
-$('input[name=phone]').on('keyup keypress',function (){
+$('input[name=phone]').on('keyup keypress', function () {
     $(this).val($(this).val().replace(/[^0-9]/g, ''));
 });
 $('.password-check').on('keyup keypress change click', function () {
     let password = $(this).val();
     let passwordError = $('.password-error');
     let passwordErrorMessage = $('#password-error-message');
-        switch (true) {
+    switch (true) {
         case password.length < 8:
             passwordError.html(passwordErrorMessage.data('max-character')).removeClass('d-none');
             break;

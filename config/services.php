@@ -14,6 +14,13 @@ return [
     |
     */
 
+
+    // 'myfatoorah' => [
+    //     'api_key' => env('MYFATOORAH_API_KEY'),
+    //     'country_code' => env('MYFATOORAH_COUNTRY_CODE', 'KWT'),
+    //     'is_test' => env('MYFATOORAH_TEST_MODE', true),
+    // ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

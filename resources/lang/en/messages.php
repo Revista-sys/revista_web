@@ -7934,4 +7934,8 @@
   'The banner type must be.jpg  .png  .jpeg  .gif  .bmp  .tif  .tiff .webp' => 'The banner type must be.jpg  .png  .jpeg  .gif  .bmp  .tif  .tiff .webp',
   'Find_your_favourite_brands_and_products' => 'Find your favourite brands and products',
   'online' => 'Online',
+  'The password and con password must match.' => 'The password and con password must match.',
+  'name_on_card' => 'Name on card',
+  'payment_failed' => 'Payment failed',
+  'pay_now' => 'Pay now',
 );

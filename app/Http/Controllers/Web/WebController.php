@@ -32,6 +32,7 @@ use App\Models\ProductCompare;
 use App\Models\Seller;
 use App\Models\Setting;
 use App\Models\Wishlist;
+use App\Models\User;
 use App\Traits\CommonTrait;
 use App\Traits\SmsGateway;
 use App\Utils\CartManager;
@@ -414,65 +415,31 @@ class WebController extends Controller
         ]);
     }
 
-    public function checkout_payment(Request $request)
+    private function initiate_session()
     {
-        $response = self::checkValidationForCheckoutPages($request);
-        if ($response['status'] == 0) {
-            foreach ($response['message'] as $message) {
-                Toastr()->error($message);
-            }
-            return $response['redirect'] ? redirect($response['redirect']) : redirect('/');
-        }
-
-        $cartItemGroupIDs = CartManager::get_cart_group_ids();
-        $cartGroupList = Cart::whereIn('cart_group_id', $cartItemGroupIDs)->get()->groupBy('cart_group_id');
-        $isPhysicalProductExistArray = [];
-        foreach ($cartGroupList as $groupId => $cartGroup) {
-            $isPhysicalProductExist = false;
-            foreach ($cartGroup as $cart) {
-                if ($cart->product_type == 'physical') {
-                    $isPhysicalProductExist = true;
-                }
-            }
-            $isPhysicalProductExistArray[$groupId] = $isPhysicalProductExist;
-        }
-        $cashOnDeliveryBtnShow = !in_array(false, $isPhysicalProductExistArray);
-
-        $order = Order::find(session('order_id'));
-        $couponDiscount = session()->has('coupon_discount') ? session('coupon_discount') : 0;
-        $orderWiseShippingDiscount = CartManager::order_wise_shipping_discount();
-        $getShippingCostSavedForFreeDelivery = CartManager::get_shipping_cost_saved_for_free_delivery();
-        $amount = CartManager::cart_grand_total() - $couponDiscount - $orderWiseShippingDiscount - $getShippingCostSavedForFreeDelivery;
-        $inr = Currency::where(['symbol' => '₹'])->first();
-        $usd = Currency::where(['code' => 'USD'])->first();
-        $myr = Currency::where(['code' => 'MYR'])->first();
-
-        $offlinePaymentMethods = OfflinePaymentMethod::where('status', 1)->get();
-        $paymentPublishedStatus = config('get_payment_publish_status');
-        $paymentGatewayPublishedStatus = isset($paymentPublishedStatus[0]['is_published']) ? $paymentPublishedStatus[0]['is_published'] : 0;
-
-        if (session()->has('address_id') && session()->has('billing_address_id')) {
-            return view(VIEW_FILE_NAMES['payment_details'], [
-                'cashOnDeliveryBtnShow' => $cashOnDeliveryBtnShow,
-                'order' => $order,
-                'cash_on_delivery' => getWebConfig(name: 'cash_on_delivery'),
-                'digital_payment' => getWebConfig(name: 'digital_payment'),
-                'wallet_status' => getWebConfig(name: 'wallet_status'),
-                'offline_payment' => getWebConfig(name: 'offline_payment'),
-                'coupon_discount' => $couponDiscount,
-                'amount' => $amount,
-                'inr' => $inr,
-                'usd' => $usd,
-                'myr' => $myr,
-                'payment_gateway_published_status' => $paymentGatewayPublishedStatus,
-                'payment_gateways_list' => payment_gateways(),
-                'offline_payment_methods' => $offlinePaymentMethods
+        $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'Authorization' => 'Bearer rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL',
+            'Content-Type' => 'application/json'
+        ])
+            ->post('https://apitest.myfatoorah.com/v2/InitiateSession', [
+                'CustomerIdentifier' => 'Test',
+                'SaveToken' => true,
+                'IsRecurring' => false
             ]);
-        }
 
-        Toastr()->error(translate('incomplete_info'));
-        return back();
+        return $response->getBody()->getContents();
     }
+
+
+
+
+
+
+
+
+
+
+
 
     public function initiateMyFatoorahPayment($amount, $currency, $description, $user)
     {
@@ -514,7 +481,6 @@ class WebController extends Controller
             // Decode the JSON response
             $responseBody = json_decode($response->getBody()->getContents());
 
-            dd($responseBody);
 
 
             if (isset($responseBody->IsSuccess) && !$responseBody->IsSuccess) {
@@ -539,7 +505,12 @@ class WebController extends Controller
 
 
     public function checkout_complete(Request $request)
+
+
     {
+
+
+        dd("teset");
 
         if ($request->payment_method != 'online') {
             return back()->with('error', 'Something went wrong!');
@@ -611,6 +582,8 @@ class WebController extends Controller
 
             if ($response['invoiceId'] !== null) {
                 return redirect($response['invoiceURL']);
+                // dd($response);
+                // return response()->json($response);
             }
         }
 
@@ -1747,5 +1720,141 @@ class WebController extends Controller
         return response()->json([
             'methodHtml' => view(VIEW_FILE_NAMES['pay_offline_method_list_partials'], compact('method'))->render(),
         ]);
+    }
+
+    // -- myfatoorah -- checkout payment --
+    public function checkout_payment(Request $request)
+    {
+        // -- curlData for initiate session --
+        $curlData = [
+            'CustomerIdentifier' => auth('customer')->user()->id,
+            'SaveToken' => true,
+            'IsRecurring' => false
+        ];
+
+
+
+        // -- initiate session --
+        $session = $this->MyFatoorahPayment->InitiateSession($curlData);
+
+        // -- check validation for checkout pages --
+        $response = self::checkValidationForCheckoutPages($request);
+
+        // -- if validation failed --
+        if ($response['status'] == 0) {
+            foreach ($response['message'] as $message) {
+                Toastr()->error($message);
+            }
+            return $response['redirect'] ? redirect($response['redirect']) : redirect('/');
+        }
+
+        // -- get cart item group ids --        
+        $cartItemGroupIDs = CartManager::get_cart_group_ids();
+
+        // -- get cart group list --
+        $cartGroupList = Cart::whereIn('cart_group_id', $cartItemGroupIDs)->get()->groupBy('cart_group_id');
+
+        // -- check if physical product exist --
+        $isPhysicalProductExistArray = [];
+        foreach ($cartGroupList as $groupId => $cartGroup) {
+            $isPhysicalProductExist = false;
+            foreach ($cartGroup as $cart) {
+                if ($cart->product_type == 'physical') {
+                    $isPhysicalProductExist = true;
+                }
+            }
+            $isPhysicalProductExistArray[$groupId] = $isPhysicalProductExist;
+        }
+
+        // -- check if cash on delivery is enabled --
+        $cashOnDeliveryBtnShow = !in_array(false, $isPhysicalProductExistArray);
+
+        // -- get order --
+        $order = Order::find(session('order_id'));
+
+        // -- get coupon discount --
+        $couponDiscount = session()->has('coupon_discount') ? session('coupon_discount') : 0;
+
+        // -- get order wise shipping discount --
+        $orderWiseShippingDiscount = CartManager::order_wise_shipping_discount();
+
+        // -- get shipping cost saved for free delivery --
+        $getShippingCostSavedForFreeDelivery = CartManager::get_shipping_cost_saved_for_free_delivery();
+
+        // -- get amount --
+        $amount = CartManager::cart_grand_total() - $couponDiscount - $orderWiseShippingDiscount - $getShippingCostSavedForFreeDelivery;
+
+        // -- get inr --
+        $inr = Currency::where(['symbol' => '₹'])->first();
+
+        // -- get usd --
+        $usd = Currency::where(['code' => 'USD'])->first();
+
+        // -- get myr --
+        $myr = Currency::where(['code' => 'MYR'])->first();
+
+        // -- get mobile phone number --
+
+
+        // -- get offline payment methods --
+        $offlinePaymentMethods = OfflinePaymentMethod::where('status', 1)->get();
+
+        // -- get payment published status --
+        $paymentPublishedStatus = config('get_payment_publish_status');
+
+        // -- get payment gateway published status --
+        $paymentGatewayPublishedStatus = isset($paymentPublishedStatus[0]['is_published']) ? $paymentPublishedStatus[0]['is_published'] : 0;
+        // -- check if address id and billing address id exist --
+        if (session()->has('address_id') && session()->has('billing_address_id')) {
+            return view(VIEW_FILE_NAMES['payment_details'], [
+                'cashOnDeliveryBtnShow' => $cashOnDeliveryBtnShow,
+                'order' => $order,
+                'cash_on_delivery' => getWebConfig(name: 'cash_on_delivery'),
+                'digital_payment' => getWebConfig(name: 'digital_payment'),
+                'wallet_status' => getWebConfig(name: 'wallet_status'),
+                'offline_payment' => getWebConfig(name: 'offline_payment'),
+                'coupon_discount' => $couponDiscount,
+                'amount' => $amount,
+                'inr' => $inr,
+                'usd' => $usd,
+                'myr' => $myr,
+                'payment_gateway_published_status' => $paymentGatewayPublishedStatus,
+                'payment_gateways_list' => payment_gateways(),
+                'offline_payment_methods' => $offlinePaymentMethods,
+                'session' => $session
+            ]);
+        }
+
+        // -- if address id and billing address id not exist --
+        Toastr()->error(translate('incomplete_info'));
+        return back();
+    }
+
+    public function execute_payment(Request $request)
+    {
+
+
+        $sessionId = $request->sessionId;
+        $invoiceValue = $request->invoiceValue;
+
+        try {
+            $data = $this->MyFatoorahPayment->executePayment([
+                'CustomerReference' => 69,
+                'SessionId' => $sessionId,
+                'InvoiceValue' => $invoiceValue
+                // 'InvoiceValue' => session('cart_total'),
+            ]);
+
+
+            return response()->json([
+                'success' => true,
+                'redirect_url' => $data->PaymentURL
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

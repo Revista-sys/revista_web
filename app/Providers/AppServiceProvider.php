@@ -27,9 +27,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
-ini_set('memory_limit',-1);
-ini_set('upload_max_filesize','180M');
-ini_set('post_max_size','200M');
+ini_set('memory_limit', -1);
+ini_set('upload_max_filesize', '180M');
+ini_set('post_max_size', '200M');
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -92,7 +92,7 @@ class AppServiceProvider extends ServiceProvider
                         'guest_checkout_status' => Helpers::get_business_settings('guest_checkout'),
                     ];
 
-                    if ((!Request::is('admin') && !Request::is('admin/*') && !Request::is('seller/*') && !Request::is('vendor/*')) || Request::is('vendor/auth/registration/*') ) {
+                    if ((!Request::is('admin') && !Request::is('admin/*') && !Request::is('seller/*') && !Request::is('vendor/*')) || Request::is('vendor/auth/registration/*')) {
                         $flash_deals = FlashDeal::with(['products.product.reviews', 'products.product' => function ($query) {
                             $query->active()->with(['wishList' => function ($query) {
                                 return $query->where('customer_id', Auth::guard('customer')->user() ? Auth::guard('customer')->user()->id : 0);
@@ -226,7 +226,6 @@ class AppServiceProvider extends ServiceProvider
                     Schema::defaultStringLength(191);
                 }
             } catch (\Exception $exception) {
-
             }
         }
 
@@ -254,6 +253,5 @@ class AppServiceProvider extends ServiceProvider
                 ]
             );
         });
-
     }
 }

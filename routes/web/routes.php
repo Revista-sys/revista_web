@@ -58,6 +58,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
     Route::post(ShopFollower::SHOP_FOLLOW[URI], [ShopFollowerController::class, 'followOrUnfollowShop'])->name('shop-follow');
 });
 
+
 Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestCheck']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/magzine-category', 'MagzineController@index')->name('magzine');
@@ -76,7 +77,16 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
     Route::get('checkout-shipping', 'WebController@checkout_shipping')->name('checkout-shipping');
     Route::get('checkout-payment', 'WebController@checkout_payment')->name('checkout-payment');
     Route::get('checkout-review', 'WebController@checkout_review')->name('checkout-review');
-    Route::get('checkout-complete', 'WebController@checkout_complete')->name('checkout-complete');
+    // Route::post('checkout-complete', 'WebController@checkout_complete')->name('checkout-complete');
+    // Route::post('execute-payment', 'WebController@execute_payment')->name('execute-payment');
+
+
+    // initiate myfatoorah payment
+    // Route::get('myfatoorah/initiate-session', [MyFatoorahController::class, 'initiateSession'])
+    //     ->name('myfatoorah.initiate-session');
+    // Route::post('myfatoorah/execute-payment', [MyFatoorahController::class, 'executePayment'])
+    //     ->name('myfatoorah.execute-payment');
+
 
 
 
@@ -120,8 +130,8 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
     Route::get('/product/{slug}', 'ProductDetailsController@index')->name('product');
     Route::get('/magzine/{slug}', 'MagzineDetailsController@index')->name('magzinedetails');
 
-    Route::get('payment', [MyFatoorahController::class, 'index']);
-    Route::get('payment/callback', [MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
+    Route::post('payment', [MyFatoorahController::class, 'index']);
+    Route::post('payment/callback', [MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
 
 
 

@@ -4,11 +4,17 @@
 
 @push('css_or_js')
     <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/payment.css') }}">
-    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
-    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://demo.myfatoorah.com/applepay/v3/applepay.js"></script>
+    <script src="https://demo.myfatoorah.com/stcPay/v1/stcpay.js"></script>
+    <script src="https://demo.myfatoorah.com/payment/v1/session.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script> --}}
+    {{-- <script src="https://js.stripe.com/v3/"></script> --}}
 @endpush
 
 @section('content')
+    <div id="unified-session"></div>
     <div class="container pb-5 mb-2 mb-md-4 rtl px-0 px-md-3 text-align-direction">
         <div class="row mx-max-md-0">
             <div class="col-md-12 mb-3 pt-3 px-max-md-0">
@@ -40,94 +46,10 @@
                                     @if ($cashOnDeliveryBtnShow && $cash_on_delivery['status'])
                                         <div id="cod-for-cart" class="payment-method-container">
 
-                                            <div class="card cursor-pointer mb-2">
-                                                <form action="{{ route('checkout-complete') }}" method="get"
-                                                    class="needs-validation" id="cash_on_delivery_form_cod">
-                                                    <label class="m-0">
-                                                        <span
-                                                            class="btn btn-block click-if-alone d-flex gap-2 align-items-center cursor-pointer"
-                                                            style="padding: 0px;">
-                                                            <div class="card-cursor-container">
-                                                                <div class="card-cursor-container-inner"
-                                                                    style="border: 1px solid black; border-radius: 5px; padding: 4px;">
-                                                                    <svg width="44" viewBox="0 0 41 13" fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path
-                                                                            d="M26.4421 9.33218V3.1199H27.4956V3.61802C27.8162 3.21723 28.2915 2.99963 28.8811 2.99963C30.095 2.99963 30.9652 3.96725 30.9652 5.35282C30.9652 6.73838 30.0893 7.72324 28.8811 7.72324C28.2857 7.72324 27.8162 7.49418 27.4956 7.09339V9.33209L26.4421 9.33218ZM27.4957 4.78039V5.92551C27.7189 6.38932 28.1197 6.72709 28.698 6.72709C29.3966 6.72709 29.8661 6.20604 29.8661 5.34722C29.8661 4.49986 29.3966 3.9845 28.698 3.9845C28.1197 3.99018 27.7189 4.30511 27.4957 4.78039Z"
-                                                                            fill="#02AA7C" />
-                                                                        <path
-                                                                            d="M31.6443 6.29642C31.6443 5.54062 32.1138 5.01388 32.8925 4.91655L34.6846 4.68749V4.4642C34.6846 4.19514 34.5472 4.05195 34.2953 4.05195H32.0451V3.09579H34.3354C35.2458 3.09579 35.7439 3.54236 35.7439 4.33256V7.5675H34.6789V7.0236C34.3698 7.45879 33.8602 7.70492 33.2017 7.70492C32.2742 7.70492 31.6443 7.13809 31.6443 6.29642ZM33.4593 6.84601C33.9975 6.84601 34.4956 6.54255 34.6788 6.09598V5.53484L33.3104 5.72382C32.9326 5.77537 32.7207 5.97572 32.7207 6.30211C32.7208 6.65135 32.9898 6.84601 33.4593 6.84601Z"
-                                                                            fill="#02AA7C" />
-                                                                        <path
-                                                                            d="M36.5151 8.3577H37.2823C37.5743 8.3577 37.7061 8.23744 37.8034 7.9626L37.9408 7.5675L36.3147 3.09579H37.4141L38.4275 6.21056H38.4504L39.418 3.09579H40.5001L38.7195 8.23166C38.479 8.93591 38.1583 9.31377 37.374 9.31377H36.5152L36.5151 8.3577Z"
-                                                                            fill="#02AA7C" />
-                                                                        <path
-                                                                            d="M4.36479 12.3801C5.59009 12.3801 6.5978 11.9965 7.26196 11.3552C7.76008 10.8628 8.05207 10.1986 8.05207 9.43146C8.05207 8.73868 7.79439 8.11461 7.3192 7.63933C6.84401 7.16406 6.16261 6.81482 5.30379 6.64878L3.89529 6.37394C3.3113 6.26515 2.97922 5.97316 2.97922 5.56668C2.97922 5.03416 3.4945 4.66777 4.31901 4.66777C4.83429 4.66777 5.27517 4.83381 5.56716 5.1258C5.75035 5.32624 5.87631 5.58383 5.91639 5.87582L7.94896 5.41779C7.89172 4.83381 7.61688 4.31844 7.19894 3.89481C6.52909 3.23634 5.50414 2.81839 4.29608 2.81839C3.17958 2.81839 2.24635 3.18487 1.59935 3.76886C1.04967 4.28413 0.740527 4.97691 0.740527 5.74987C0.740527 6.4255 0.958121 6.99802 1.399 7.43321C1.83988 7.87408 2.4811 8.20048 3.32277 8.40651L4.71411 8.73859C5.41267 8.90463 5.72182 9.16231 5.72182 9.62035C5.72182 10.1872 5.20655 10.5193 4.36488 10.5193C3.75796 10.5193 3.26553 10.3188 2.95638 9.98674C2.73879 9.76914 2.60715 9.47146 2.5899 9.14507L0.5 9.60319C0.557243 10.2273 0.849235 10.7769 1.29011 11.2178C1.9829 11.9449 3.10518 12.3801 4.36479 12.3801ZM19.8353 12.3801C21.1923 12.3801 22.2344 11.8877 22.95 11.1892C23.5168 10.6395 23.8661 9.99829 24.0493 9.33982L21.908 8.62411C21.8163 8.95619 21.6331 9.30542 21.3411 9.57457C20.9919 9.90665 20.5166 10.1414 19.8353 10.1414C19.2112 10.1414 18.6273 9.90096 18.2035 9.48293C17.7798 9.04205 17.5222 8.40083 17.5222 7.59347C17.5222 6.76896 17.7799 6.14488 18.2035 5.70401C18.6215 5.28028 19.1941 5.06278 19.8182 5.06278C20.4766 5.06278 20.9347 5.28037 21.2668 5.61245C21.5416 5.88729 21.7076 6.23653 21.8164 6.58576L23.9979 5.85289C23.8318 5.21166 23.4826 4.57035 22.973 4.03792C22.2401 3.3222 21.1752 2.81261 19.7667 2.81261C18.467 2.81261 17.2933 3.30505 16.4516 4.1524C15.6099 5.01122 15.0946 6.20791 15.0946 7.59925C15.0946 8.99059 15.6272 10.1815 16.486 11.0461C17.3218 11.8877 18.5127 12.3801 19.8353 12.3801ZM12.4321 12.3801C13.3826 12.3801 14.0639 12.0881 14.3559 11.8304V9.84941C14.1326 10.0155 13.6974 10.2159 13.1249 10.2159C12.7184 10.2159 12.4264 10.1242 12.2089 9.9239C12.0257 9.7407 11.934 9.42578 11.934 9.00783V0.619873H9.51212V3.09332H14.3502V5.44081H9.51212V9.60328C9.51212 10.4449 9.7698 11.1263 10.2278 11.6015C10.7431 12.1053 11.4988 12.3801 12.4321 12.3801Z"
-                                                                            fill="black" />
-                                                                    </svg>
-                                                                </div>
-                                                                <input type="radio" id="online" class="custom-radio">
-                                                            </div>
-                                                        </span>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            <div class="card cursor-pointer mb-2">
-                                                <form action="{{ route('checkout-complete') }}" method="get"
-                                                    class="needs-validation" id="cash_on_delivery_form_cod">
-                                                    <label class="m-0">
-                                                        <span
-                                                            class="btn btn-block click-if-alone d-flex gap-2 align-items-center cursor-pointer"
-                                                            style="padding: 0px;">
-                                                            <div class="card-cursor-container">
-                                                                <div class="card-cursor-container-inner">
-                                                                    <img src="{{ theme_asset(path: 'public/assets/front-end/img/pay_logos/benefit_pay.png') }}"
-                                                                        alt=""
-                                                                        style="width: 55px; height: 48px;">Benefit
-
-                                                                </div>
-                                                                <input type="radio" id="online" class="custom-radio">
-                                                            </div>
-                                                        </span>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            <div class="card cursor-pointer mb-2">
-                                                <form action="{{ route('checkout-complete') }}" method="get"
-                                                    class="needs-validation" id="cash_on_delivery_form_cod">
-                                                    <label class="m-0">
-                                                        <span
-                                                            class="btn btn-block click-if-alone d-flex gap-2 align-items-center cursor-pointer">
-                                                            <div class="card-cursor-container">
-                                                                <div class="card-cursor-container-inner">
-                                                                    <img src="{{ theme_asset(path: 'public/assets/front-end/img/pay_logos/knet_pay.png') }}"
-                                                                        alt="" style="width: 55px; height: 30px;">
-                                                                    Knet
-
-                                                                </div>
-                                                                <input type="radio" id="online" class="custom-radio">
-                                                            </div>
-                                                        </span>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            <div class="card cursor-pointer mb-2">
-                                                <form action="{{ route('checkout-complete') }}" method="get"
-                                                    class="needs-validation" id="cash_on_delivery_form_cod">
-                                                    <label class="m-0">
-                                                        <span
-                                                            class="btn btn-block click-if-alone d-flex gap-2 align-items-center cursor-pointer">
-                                                            <div class="card-cursor-container">
-                                                                <div class="card-cursor-container-inner">
-                                                                    <img src="{{ theme_asset(path: 'public/assets/front-end/img/pay_logos/american_pay.png') }}"
-                                                                        alt="" style="width: 55px; height: 30px; ">
-                                                                    American Express
-                                                                </div>
-                                                                <input type="radio" id="online" class="custom-radio">
-                                                            </div>
-                                                        </span>
-                                                    </label>
-                                                </form>
+                                            <div id="mf-apple-pay"></div>
+                                            <div id="mf-stc-pay"></div>
+                                            <div id="mf-card-element" style="width: 500px">
+                                                <div id="card-element"></div>
                                             </div>
                                         </div>
                                     @endif
@@ -359,5 +281,300 @@
                 $('#' + checked_button_id + '_form').submit();
             }
         })
+    </script>
+
+    <!-- Add MyFatoorah Configuration Script -->
+    <script>
+        // -- myfatoorah --
+        var myfatoorahAP = window.myFatoorahAP;
+        var myfatoorahSTC = window.myFatoorahStc;
+        var myfatoorah = window.myfatoorah;
+
+        // -- apple pay --
+        // apple pay config
+        var applePayConfig = {
+            sessionId: "{{ $session->SessionId }}",
+            countryCode: "{{ $session->CountryCode }}",
+            currencyCode: "SAR",
+            amount: "{{ $amount }}",
+            cardViewId: "mf-apple-pay",
+            callback: applePayCallback,
+            sessionStarted: sessionStarted,
+            sessionCanceled: sessionCanceled,
+            style: {
+                button: {
+                    useCustomButton: true,
+                    textContent: "Pay",
+                    fontSize: "18px",
+                    height: "40px",
+                    borderRadius: "8px",
+                    width: "70%",
+                }
+            }
+        }
+
+        // init apple pay
+        myfatoorahAP.init(applePayConfig);
+
+        // apple pay callback
+        function applePayCallback(response) {
+            try {
+                console.log("response >> " + JSON.stringify(response));
+            } catch (error) {
+                console.log("error >> " + JSON.stringify(error));
+            }
+        }
+
+        // -- stc pay --
+        var stcPayConfig = {
+            sessionId: "{{ $session->SessionId }}", //Here you add the "SessionId" you receive from InitiateSession Endpoint.
+            countryCode: "{{ $session->CountryCode }}", //Here, add your "CountryCode" you receive from InitiateSession Endpoint.
+            amount: "{{ $amount }}",
+            // mobileNumber: "0557877988", 
+            containerId: "mf-stc-pay",
+            callback: stcPayCallback,
+            style: {
+                fontSize: "25px",
+                borderRadius: "8px",
+                button: {
+                    height: '40',
+                }
+                // frameWidth: "70%,
+            }
+        }
+
+        // init stc pay
+        myfatoorahSTC.init(stcPayConfig);
+
+        // stc pay callback
+        function stcPayCallback(response) {
+            console.log("response >> " + JSON.stringify(response));
+            try {
+                console.log("response >> " + JSON.stringify(response));
+
+                if (response) {
+                    $.ajax({
+                        url: '{{ route('execute-payment') }}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify({
+                            sessionId: response.sessionId,
+                            invoiceValue: "{{ $amount }}",
+                        }),
+                        success: function(serverResponse) {
+                            console.log(serverResponse);
+                            // Open popup window
+                            const popup = window.open(serverResponse.redirect_url, 'PaymentWindow',
+                                'width=800,height=600,left=200,top=100');
+
+                            // Monitor popup location changes
+                            const timer = setInterval(function() {
+                                try {
+                                    if (popup.closed) {
+                                        clearInterval(timer);
+                                        window.location.href =
+                                            'http://localhost/products?id=13&data_from=category&page=1';
+                                    }
+
+                                    // Check current URL
+                                    const currentUrl = popup.location.href;
+                                    console.log('Current popup URL:', currentUrl);
+
+                                    // Optional: Handle specific URLs
+                                    if (currentUrl.includes('success') || currentUrl.includes(
+                                            'completed')) {
+
+                                        console.log(currentUrl)
+
+                                        // Handle success
+                                        clearInterval(timer);
+                                        popup.close();
+                                        window.location.reload();
+                                    }
+                                } catch (e) {
+                                    // Cross-origin errors will be caught here
+                                    console.log('Navigation in progress...');
+                                }
+                            }, 500);
+                        },
+                        error: function(xhr) {
+                            console.error('errormessage', xhr.error());
+                        }
+                    })
+                }
+
+            } catch (error) {
+                console.log("error >> " + JSON.stringify(error));
+            }
+        }
+
+        // -- card pay --
+        // card payment config
+        var cardConfig = {
+            sessionId: "{{ $session->SessionId }}",
+            countryCode: "{{ $session->CountryCode }}",
+            currencyCode: "SAR",
+            amount: "{{ $amount }}",
+            callback: cardPayment,
+            paymentOptions: ["Card"], //"GooglePay", "ApplePay", "Card"
+            containerId: "mf-card-element",
+            cardViewId: "card-element",
+            supportedNetworks: ["v", "m", "md"],
+            language: "en",
+
+            settings: {
+                card: {
+                    onCardChanged: function(card) {
+                        console.log("card >> " + JSON.stringify(card));
+                    },
+                    style: {
+                        hideNetworkIcons: false,
+                        cardHeight: "200px",
+                        tokenHeight: "230px",
+                        width: "500px",
+                        input: {
+                            color: "black",
+                            fontSize: "15px",
+                            inputHeight: "45px",
+                            backgroundColor: "green",
+                            borderRadius: "30px",
+                            outerRadius: "10px",
+                            placeHolder: {
+                                holderName: "Name On Card",
+                                cardNumber: "Number",
+                                expiryDate: "MM/YY",
+                                securityCode: "CVV",
+                            }
+                        },
+                        text: {
+                            saveCard: "Save card info for future payments",
+                            addCard: "Use another Card!",
+                            deleteAlert: {
+                                title: "Delete",
+                                message: "Are you sure?",
+                                confirm: "YES",
+                                cancel: "NO"
+                            }
+                        },
+                        error: {
+                            borderColor: "red",
+                            borderRadius: "3px",
+                        },
+                        button: {
+                            useCustomButton: false,
+                            //onButtonClicked: submit,
+                            textContent: "Pay",
+                            fontSize: "18px",
+                            fontFamily: "Times",
+                            height: "40px",
+                            borderRadius: "8px",
+                            width: "70%",
+                            margin: "0 auto",
+                            cursor: "pointer"
+                        },
+                        separator: {
+                            useCustomSeparator: false,
+                            fontSize: "20px",
+                            fontFamily: "sans-serif",
+                            textSpacing: "2px",
+                            lineStyle: "dashed",
+                        }
+                    }
+                }
+            }
+        };
+
+        // init card pay
+        myfatoorah.init(cardConfig);
+
+
+
+        // card payment callback
+        async function cardPayment(response) {
+            //Pass session id to your backend here
+            try {
+                console.log("response >> " + JSON.stringify(response));
+
+                if (response) {
+                    $.ajax({
+                        url: '{{ route('execute-payment') }}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify({
+                            sessionId: response.sessionId,
+                            invoiceValue: "{{ $amount }}"
+                        }),
+                        success: function(serverResponse) {
+                            console.log(serverResponse);
+                            // Open popup window
+                            const popup = window.open(serverResponse.redirect_url, 'PaymentWindow',
+                                'width=800,height=600,left=200,top=100');
+
+                            // Monitor popup location changes
+                            const timer = setInterval(function() {
+                                try {
+                                    if (popup.closed) {
+                                        clearInterval(timer);
+                                        window.location.href =
+                                            'http://localhost/products?id=13&data_from=category&page=1';
+                                    }
+
+                                    // Check current URL
+                                    const currentUrl = popup.location.href;
+                                    console.log('Current popup URL:', currentUrl);
+
+                                    // Optional: Handle specific URLs
+                                    if (currentUrl.includes('success') || currentUrl.includes(
+                                            'completed')) {
+
+                                        console.log(currentUrl)
+
+                                        // Handle success
+                                        clearInterval(timer);
+                                        popup.close();
+                                        window.location.reload();
+                                    }
+                                } catch (e) {
+                                    // Cross-origin errors will be caught here
+                                    console.log('Navigation in progress...');
+                                }
+                            }, 500);
+                        },
+                        error: function(xhr) {
+                            console.error('errormessage', xhr.error());
+                        }
+                    })
+                }
+
+            } catch (error) {
+                console.log("error >> " + JSON.stringify(error));
+            }
+
+            // window.location = 'embedded-payment-sample-code-call-ExecutePayment.php?sessionId=' +
+            //     "{{ $session->SessionId }}";
+        }
+
+        // message status
+        function messageStatus(message) {
+            console.log("message >> " + message);
+        }
+
+        // session canceled
+        function sessionCanceled() {
+            console.log("Failed");
+        }
+
+        // session started
+        function sessionStarted() {
+            console.log("Start");
+        }
     </script>
 @endpush

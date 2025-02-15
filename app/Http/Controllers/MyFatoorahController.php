@@ -14,6 +14,8 @@ use Exception;
 class MyFatoorahController extends Controller
 {
 
+
+    private $mfObj;
     /**
      * @var array
      */
@@ -27,9 +29,12 @@ class MyFatoorahController extends Controller
     public function __construct()
     {
         $this->mfConfig = [
-            'apiKey'      => config('myfatoorah.api_key'),
-            'isTest'      => config('myfatoorah.test_mode'),
-            'countryCode' => config('myfatoorah.country_iso'),
+            'apiKey' => config('services.myfatoorah.api_key'),
+            'countryCode' => config('services.myfatoorah.country_code'),
+            'isTest' => config('services.myfatoorah.is_test'),
+            // 'apiKey'      => config('myfatoorah.api_key'),
+            // 'isTest'      => config('myfatoorah.test_mode'),
+            // 'countryCode' => config('myfatoorah.country_iso'),
         ];
     }
 
@@ -51,8 +56,8 @@ class MyFatoorahController extends Controller
             $orderId  = request('oid') ?: 147;
             $curlData = $this->getPayLoadData($orderId);
 
-            $mfObj   = new MyFatoorahPayment($this->mfConfig);
-            $payment = $mfObj->getInvoiceURL($curlData, $paymentId, $orderId, $sessionId);
+            $this->mfObj   = new MyFatoorahPayment($this->mfConfig);
+            $payment = $this->mfObj->getInvoiceURL($curlData, $paymentId, $orderId, $sessionId);
 
             return redirect($payment['invoiceURL']);
         } catch (Exception $ex) {
@@ -106,8 +111,8 @@ class MyFatoorahController extends Controller
         try {
             $paymentId = request('paymentId');
 
-            $mfObj = new MyFatoorahPaymentStatus($this->mfConfig);
-            $data  = $mfObj->getPaymentStatus($paymentId, 'PaymentId');
+            $this->mfObj = new MyFatoorahPaymentStatus($this->mfConfig);
+            $data  = $this->mfObj->getPaymentStatus($paymentId, 'PaymentId');
 
             $message = $this->getTestMessage($data->InvoiceStatus, $data->InvoiceError);
 
@@ -141,15 +146,15 @@ class MyFatoorahController extends Controller
             $userDefinedField = config('myfatoorah.save_card') && $customerId ? "CK-$customerId" : '';
 
             //Get the enabled gateways at your MyFatoorah acount to be displayed on checkout page
-            $mfObj          = new MyFatoorahPaymentEmbedded($this->mfConfig);
-            $paymentMethods = $mfObj->getCheckoutGateways($order['total'], $order['currency'], config('myfatoorah.register_apple_pay'));
+            $this->mfObj          = new MyFatoorahPaymentEmbedded($this->mfConfig);
+            $paymentMethods = $this->mfObj->getCheckoutGateways($order['total'], $order['currency'], config('myfatoorah.register_apple_pay'));
 
             if (empty($paymentMethods['all'])) {
                 throw new Exception('noPaymentGateways');
             }
 
             //Generate MyFatoorah session for embedded payment
-            $mfSession = $mfObj->getEmbeddedSession($userDefinedField);
+            $mfSession = $this->mfObj->getEmbeddedSession($userDefinedField);
 
             //Get Environment url
             $isTest = $this->mfConfig['isTest'];
@@ -221,8 +226,8 @@ class MyFatoorahController extends Controller
             $status = 'Paid';
             $error  = '';
         } else {
-            $mfObj = new MyFatoorahPaymentStatus($this->mfConfig);
-            $data  = $mfObj->getPaymentStatus($invoiceId, 'InvoiceId');
+            $this->mfObj = new MyFatoorahPaymentStatus($this->mfConfig);
+            $data  = $this->mfObj->getPaymentStatus($invoiceId, 'InvoiceId');
 
             $status = $data->InvoiceStatus;
             $error  = $data->InvoiceError;
@@ -256,4 +261,36 @@ class MyFatoorahController extends Controller
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+    public function initiateSession()
+    {
+        try {
+            $data = $this->mfObj->initiateSession(null);
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function execute_payment(Request $request)
+    {
+        try {
+            $data = $this->mfObj->executePayment([
+                'SessionId' => $request->sessionId,
+                'InvoiceValue' => session('cart_total'),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'redirect_url' => $data->PaymentURL
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -21,7 +21,7 @@ class ModulePermissionMiddleware
             return $next($request);
         }
 
-        Toastr::error(translate('access_Denied').'!');
+        // Toastr::error(translate('access_Denied').'!');
         return back();
     }
 }
